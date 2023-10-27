@@ -14,22 +14,11 @@ class ArduinoCommunication
             Console.WriteLine("Connected on port number: " + myPort.PortName);
             // Additional initialization or configuration if needed
 
-            // Your main program loop goes here
-            while (true)
-            {
-                // Check for user input
-                if (Console.KeyAvailable)
-                {
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-                    if (key.Key == ConsoleKey.X)
-                    {
-                        CloseSerialPort();
-                        break; // Exit the loop when 'X' is pressed
-                    }
-                }
+            // Register event handlers for program exit
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
-                // Your other program logic goes here
-            }
+            // Your main program logic goes here
+
         }
         catch (Exception e)
         {
@@ -37,8 +26,19 @@ class ArduinoCommunication
             Console.WriteLine(e.ToString());
 
             // Close the port to release resources
-            CloseSerialPort();
+            if (myPort != null && myPort.IsOpen)
+            {
+                myPort.Close();
+            }
+
+            Console.ReadKey(true);
         }
+    }
+
+    private static void OnProcessExit(object sender, EventArgs e)
+    {
+        // This is called when the process is exiting
+        CloseSerialPort();
     }
 
     private static void CloseSerialPort()
