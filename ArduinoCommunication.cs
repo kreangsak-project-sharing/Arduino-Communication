@@ -49,4 +49,24 @@ class ArduinoCommunication
             Console.WriteLine("Serial port closed.");
         }
     }
-}
+
+    public static void ArduinoWriteLine(int val1, int val2, int val3, int val4, int val5)
+    {
+        try
+        {
+            if (myPort != null && myPort.IsOpen)
+            {
+                string dataSend = $"{val1} {val2} {val3} {val4} {val5}";
+                myPort.WriteLine(dataSend);
+            }
+            else
+            {
+                Console.WriteLine("Serial port is not open or initialized.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error writing to Arduino: " + ex.Message);
+        }
+    }
+} //Class
